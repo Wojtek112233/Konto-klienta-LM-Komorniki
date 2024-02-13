@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wyszukiwarka planogramów LM Komorniki</title>
+    <title>Konto klienta LM Komorniki</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -60,7 +60,7 @@
 </head>
 <body>
 
-<h2>Wyszukiwarka planogramów LM Komorniki</h2>
+<h2>Wyszukiwarka konto klienta LM Komorniki</h2>
 
 <!-- Usunięcie przycisku skanera -->
 <input type="text" id="searchInput" placeholder="Wprowadź dane">
@@ -91,7 +91,7 @@
         }
 
         var apiKey = 'AIzaSyD0DTyPWSFIAalWvehONn1kFbkNqKyyDdU';
-        var sheetId = '1wKKsJZCgUvjmu4BgWspVDH3IHcE5WJtCpiuBiamppnk';
+        var sheetId = '1ghnvUM73iYkXLvbwc0ET46BBrmmZvT3oog4wazYuPJo';
 
         // Czyszczenie poprzednich wyników
         var resultContainer = document.getElementById('resultContainer');
@@ -112,14 +112,14 @@
             .then(data => {
                 var rows = data.values;
 
-                // Szukanie pasujących danych w kolumnie "D,E"
+                // Szukanie pasujących danych w kolumnie "B,C,D"
                 for (var i = 0; i < rows.length; i++) {
-                    if (rows[i][3].toLowerCase() === searchInput.toLowerCase() || rows[i][4].toLowerCase() === searchInput.toLowerCase()) {
+                    if (rows[i][1].toLowerCase() === searchInput.toLowerCase() || rows[i][2].toLowerCase() === searchInput.toLowerCase() || rows[i][3].toLowerCase() === searchInput.toLowerCase()) {
                         // Tworzenie tabeli
                         var table = document.createElement('table');
 
                         // Określanie kolejności wyświetlanych kolumn
-                        var columnOrder = [0, 1, 9, 2, 4, 3, 5];
+                        var columnOrder = [0, 1, 2, 3];
 
                         // Dodawanie wierszy z danymi
                         for (var j = 0; j < columnOrder.length; j++) {
