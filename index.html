@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wyszukiwarka planogramów</title>
+    <title>Wyszukiwarka konto klienta</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,15 +56,21 @@
                 width: 90%; /* Zmiana szerokości tabeli na 90% dla mniejszych ekranów */
             }
         }
+        
+   button#addAccountButton {
+            background-color: blue; /* Zmiana koloru przycisku "Dodaj konto" na niebieski */
+            color: white;
+        }
     </style>
 </head>
 <body>
 
-<h2>Wyszukiwarka planogramów</h2>
+<h2>Wyszukiwarka konto klienta</h2>
 
 <!-- Usunięcie przycisku skanera -->
 <input type="text" id="searchInput" placeholder="Wprowadź dane">
 <button id="searchButton" onclick="searchData()">Wyszukaj</button>
+<button id="addAccountButton" onclick="openLink()">Dodaj konto</button>
 
 <h3>Wyniki wyszukiwania:</h3>
 
@@ -82,7 +88,7 @@
         }
 
         var apiKey = 'AIzaSyD0DTyPWSFIAalWvehONn1kFbkNqKyyDdU';
-        var sheetId = '1AVm0KiZJQ4YFjc0D4N49upOopz4x1CjeKpuJQYggsH4';
+        var sheetId = '1ghnvUM73iYkXLvbwc0ET46BBrmmZvT3oog4wazYuPJo';
 
         // Czyszczenie poprzednich wyników
         var resultContainer = document.getElementById('resultContainer');
@@ -92,7 +98,7 @@
         document.getElementById('searchInput').value = '';
 
         // Tworzenie żądania do Google Sheets API
-        var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Arkusz1?key=${apiKey}`;
+        var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Baza?key=${apiKey}`;
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -149,6 +155,11 @@
                 // Obsługa błędu i wyświetlanie powiadomienia
                 resultContainer.innerHTML = `<p class="error-message">Błąd: ${error.message}</p>`;
             });
+    }
+
+    function openLink() {
+        // Tu możesz dodać link do strony, do której chcesz przekierować po kliknięciu przycisku "Dodaj konto"
+        window.location.href = 'https://www.example.com'; // Zmień na właściwy link
     }
 </script>
 
