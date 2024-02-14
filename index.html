@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konto klienta LM Komorniki</title>
+    <title>Wyszukiwarka planogramów</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -60,7 +60,7 @@
 </head>
 <body>
 
-<h2>Wyszukiwarka konto klienta LM Komorniki</h2>
+<h2>Wyszukiwarka planogramów</h2>
 
 <!-- Usunięcie przycisku skanera -->
 <input type="text" id="searchInput" placeholder="Wprowadź dane">
@@ -69,18 +69,10 @@
 <h3>Wyniki wyszukiwania:</h3>
 
 <div id="resultContainer"></div>
-<script src="https://cdn.rawgit.com/serratus/quaggaJS/0.12.1/dist/quagga.min.js"></script>
+    <script src="https://cdn.rawgit.com/serratus/quaggaJS/0.12.1/dist/quagga.min.js"></script>
+   
 <script>
-    document.getElementById('searchInput').addEventListener('input', function() {
-        var inputValue = this.value.trim();
-
-        // Sprawdź, czy wprowadzony kod ma długość 13 (EAN-13)
-        if (inputValue.length === 13) {
-            searchData(); // Automatyczne uruchomienie wyszukiwania
-        }
-    });
-
-    function searchData() {
+     function searchData() {
         var searchInput = document.getElementById('searchInput').value;
 
         // Sprawdzenie, czy podano dane do wyszukania
@@ -112,9 +104,9 @@
             .then(data => {
                 var rows = data.values;
 
-                // Szukanie pasujących danych w kolumnie "B,C,D"
+                // Szukanie pasujących danych w kolumnie "D,E"
                 for (var i = 0; i < rows.length; i++) {
-                    if (rows[i][1].toLowerCase() === searchInput.toLowerCase() || rows[i][2].toLowerCase() === searchInput.toLowerCase()) {
+                    if (rows[i][1].toLowerCase() === searchInput.toLowerCase() || rows[i][3].toLowerCase() === searchInput.toLowerCase()) {
                         // Tworzenie tabeli
                         var table = document.createElement('table');
 
