@@ -57,7 +57,7 @@
             }
         }
         
-   button#addAccountButton {
+  button#addAccountButton {
             background-color: blue; /* Zmiana koloru przycisku "Dodaj konto" na niebieski */
             color: white;
         }
@@ -98,7 +98,7 @@
         document.getElementById('searchInput').value = '';
 
         // Tworzenie żądania do Google Sheets API
-        var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Baza?key=${apiKey}`;
+        var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Arkusz1?key=${apiKey}`;
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -159,7 +159,7 @@
 
     function openLink() {
         // Tu możesz dodać link do strony, do której chcesz przekierować po kliknięciu przycisku "Dodaj konto"
-        window.location.href = 'https://docs.google.com/spreadsheets/d/1ghnvUM73iYkXLvbwc0ET46BBrmmZvT3oog4wazYuPJo/edit#gid=260863134'; // Zmień na właściwy link
+        window.open('https://docs.google.com/spreadsheets/d/1ghnvUM73iYkXLvbwc0ET46BBrmmZvT3oog4wazYuPJo/edit?pli=1#gid=1771325241', '_blank'); // Zmień na właściwy link
     }
 </script>
 
