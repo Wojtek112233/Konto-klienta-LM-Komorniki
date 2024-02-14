@@ -110,8 +110,8 @@
                 // Szukanie pasujących danych w kolumnie "D,E"
                 for (var i = 0; i < rows.length; i++) {
                     // Sprawdzanie, czy indeks komórki istnieje i czy zawiera dane
-                    if ((rows[i][0] && rows[i][0].toLowerCase() === searchInput.toLowerCase()) ||
-                        (rows[i][1] && rows[i][1].toLowerCase() === searchInput.toLowerCase())) {
+                    if ((rows[i][0] && rows[i][0].toLowerCase().includes(searchInput.toLowerCase())) ||
+                        (rows[i][1] && rows[i][1].toLowerCase().includes(searchInput.toLowerCase()))) {
                         // Tworzenie tabeli
                         var table = document.createElement('table');
 
