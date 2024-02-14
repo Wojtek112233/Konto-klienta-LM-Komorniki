@@ -98,7 +98,7 @@
         document.getElementById('searchInput').value = '';
 
         // Tworzenie żądania do Google Sheets API
-        var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Arkusz1?key=${apiKey}`;
+        var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Baza?key=${apiKey}`;
         fetch(url)
             .then(response => {
                 if (!response.ok) {
