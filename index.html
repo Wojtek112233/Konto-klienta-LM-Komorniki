@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wyszukiwarka konto klienta LM Komorniki</title>
+    <title>Wyszukiwarka konto klienta </title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 10px;
-            background-color: black; /* Zmiana koloru tła strony na czarny */
-            color: white; /* Zmiana koloru tekstu na biały */
+            background-color: black;
+            color: white;
         }
         input {
             padding: 10px;
@@ -23,7 +23,7 @@
             cursor: pointer;
         }
         button#searchButton {
-            background-color: green; /* Zmiana koloru przycisku "Wyszukaj" na zielony */
+            background-color: green;
             color: white;
         }
         table {
@@ -32,8 +32,8 @@
             width: 40%;
             margin-left: auto;
             margin-right: auto;
-            background-color: white; /* Zmiana koloru tła tabeli na białe */
-            color: black; /* Zmiana koloru tekstu w tabeli na czarny */
+            background-color: white;
+            color: black;
         }
         th, td {
             border: 1px solid #ddd;
@@ -52,39 +52,90 @@
             color: white;
             margin-top: 10px;
         }
-         /* Media query dla mniejszych ekranów (np. telefony) */
-        @media (max-width: 768px) {
-            table {
-                width: 90%; /* Zmiana szerokości tabeli na 90% dla mniejszych ekranów */
-            }
-        }
-        
-  button#addAccountButton {
-            background-color: blue; /* Zmiana koloru przycisku "Dodaj konto" na niebieski */
+        #userData {
             color: white;
+            margin-top: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 4vh;
+            font-size: 21px;
+        }
+        #mainContent,
+        #searchButton,
+        #addAccountButton,
+        #searchInput,
+        h3 {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<h2>Wyszukiwarka konto klienta LM Komorniki</h2>
+<h2>Wyszukiwarka kont klienta </h2>
 
-<!-- Usunięcie przycisku skanera -->
-<input type="text" id="searchInput" placeholder="Wprowadź dane">
-<button id="searchButton" onclick="searchData()">Wyszukaj</button>
-<button id="addAccountButton" onclick="openLink()">Dodaj konto</button>
+<!-- Dane użytkownika -->
+<div id="userData"></div>
 
-<h3>Wyniki wyszukiwania:</h3>
+<!-- Dane sklepu -->
+<div id="storeData"></div>
 
-<div id="resultContainer"></div>
+<!-- Pole wprowadzania nazwy użytkownika -->
+<div id="usernameSection">
+    <input type="text" id="usernameInput" placeholder="Użytkownik" onkeydown="if(event.key==='Enter'){checkUsername();}">
+    <button id="submitUsernameButton" onclick="checkUsername()">Zatwierdź</button>
+</div>
+
+
+<!-- Reszta strony -->
+<div id="mainContent">
+    <input type="text" id="searchInput" placeholder="Wprowadź dane" onkeydown="if(event.key==='Enter'){searchData();}">
+    <button id="searchButton" onclick="searchData()">Wyszukaj</button>
+    <button id="addAccountButton" onclick="openLink()">Dodaj konto</button>
+
+    <h3>Wyniki wyszukiwania:</h3>
+    <div id="resultContainer"></div>
+</div>
+
 <script src="https://cdn.rawgit.com/serratus/quaggaJS/0.12.1/dist/quagga.min.js"></script>
 <script>
+
+    var userFileId = '1SaaFoqfNJfjt9F78DOLlQUKbeKLzwstU3AdgNng2-QY';
+    var availableUsers = [];
+
+    function initializeUserList() {
+        fetchUserList()
+            .then(users => {
+                availableUsers = users;
+            })
+            .catch(error => {
+                console.error(`Błąd podczas pobierania listy użytkowników: ${error.message}`);
+            });
+    }
+
+    function checkUsername() {
+        var usernameInput = document.getElementById('usernameInput').value;
+
+        if (usernameInput.trim() !== "") {
+            if (availableUsers.includes(usernameInput)) {
+                document.getElementById('usernameSection').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+                fetchUserData(usernameInput);
+            } else {
+                alert('Brak dostępu. Wprowadź prawidłową nazwę użytkownika.');
+            }
+        } else {
+            alert('Wprowadź nazwę użytkownika!');
+        }
+    }
+
     function searchData() {
         var searchInput = document.getElementById('searchInput').value;
 
-        // Sprawdzenie, czy podano dane do wyszukania
         if (searchInput.trim() === "") {
-            // Wyświetlanie komunikatu o braku danych
             document.getElementById('resultContainer').innerHTML = '<p class="no-results">Brak danych.</p>';
             return;
         }
@@ -92,14 +143,11 @@
         var apiKey = 'AIzaSyD0DTyPWSFIAalWvehONn1kFbkNqKyyDdU';
         var sheetId = '1ghnvUM73iYkXLvbwc0ET46BBrmmZvT3oog4wazYuPJo';
 
-        // Czyszczenie poprzednich wyników
         var resultContainer = document.getElementById('resultContainer');
         resultContainer.innerHTML = '';
 
-        // Czyszczenie pola do wprowadzania danych
         document.getElementById('searchInput').value = '';
 
-        // Tworzenie żądania do Google Sheets API
         var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Baza?key=${apiKey}`;
         fetch(url)
             .then(response => {
@@ -115,27 +163,21 @@
 
                 var rows = data.values;
 
-                // Szukanie pasujących danych w kolumnie "D,E"
                 for (var i = 0; i < rows.length; i++) {
-                    // Sprawdzanie, czy indeks komórki istnieje i czy zawiera dane
                     if ((rows[i][0] && rows[i][0].toLowerCase().includes(searchInput.toLowerCase())) ||
-                        (rows[i][1] && rows[i][1].toLowerCase().includes(searchInput.toLowerCase()))) {
-                        // Tworzenie tabeli
+                        (rows[i][1] && rows[i][1].toLowerCase().includes(searchInput.toLowerCase())) ||
+                        (rows[i][2] && rows[i][2].toLowerCase().includes(searchInput.toLowerCase())) ||
+                        (rows[i][3] && rows[i][3].toLowerCase().includes(searchInput.toLowerCase()))) {
                         var table = document.createElement('table');
-
-                        // Określanie kolejności wyświetlanych kolumn
                         var columnOrder = [0, 1, 2, 3];
 
-                        // Dodawanie wierszy z danymi
                         for (var j = 0; j < columnOrder.length; j++) {
                             var row = table.insertRow(j);
                             var headerCell = row.insertCell(0);
                             var dataCell = row.insertCell(1);
                             headerCell.textContent = data.values[0][columnOrder[j]];
-                            // Sprawdzanie, czy indeks komórki istnieje i czy zawiera dane
                             dataCell.textContent = rows[i][columnOrder[j]] || 'Brak danych';
 
-                            // Dodanie efektu podświetlenia przemiennie
                             if (j % 2 === 0) {
                                 row.classList.add('highlight-even');
                             } else {
@@ -143,26 +185,129 @@
                             }
                         }
 
-                        // Dodawanie tabeli do wyniku
                         resultContainer.appendChild(table);
                     }
                 }
 
-                // Obsługa braku wyników
                 if (resultContainer.children.length === 0) {
                     resultContainer.innerHTML = '<p class="no-results">Brak pasujących wyników.</p>';
                 }
             })
             .catch(error => {
-                // Obsługa błędu i wyświetlanie powiadomienia
                 resultContainer.innerHTML = `<p class="error-message">Błąd: ${error.message}</p>`;
             });
     }
 
     function openLink() {
-        // Tu możesz dodać link do strony, do której chcesz przekierować po kliknięciu przycisku "Dodaj konto"
-        window.open('https://docs.google.com/spreadsheets/d/1ghnvUM73iYkXLvbwc0ET46BBrmmZvT3oog4wazYuPJo/edit?pli=1#gid=1771325241', '_blank'); // Zmień na właściwy link
+        window.open(`https://docs.google.com/spreadsheets/d/${SklepyID}/edit?pli=1`, '_blank');
     }
+
+    async function fetchUserData(username) {
+        try {
+            var apiKey = 'AIzaSyD0DTyPWSFIAalWvehONn1kFbkNqKyyDdU';
+            var sheetId = '1SaaFoqfNJfjt9F78DOLlQUKbeKLzwstU3AdgNng2-QY';
+
+            var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Użytkownicy?key=${apiKey}`;
+            var response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Błąd: ${response.status} - ${response.statusText}`);
+            }
+
+            var data = await response.json();
+
+            if (!data || !data.values) {
+                throw new Error('Błąd: Brak danych lub błąd w odpowiedzi API.');
+            }
+
+            var rows = data.values;
+
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i][0] && rows[i][0].toLowerCase() === username.toLowerCase()) {
+                    var userDataContainer = document.getElementById('userData');
+                    userDataContainer.textContent = `${username} : ${rows[i][1] || 'Brak danych'}`;
+
+                    // Pobierz dane sklepu na podstawie wyniku wyszukiwania
+                    var storeId = rows[i][1]; // Przyjmuję, że ID sklepu jest w trzeciej kolumnie dla użytkownika
+                    await fetchStoreData(storeId);
+
+                    // Wyświetl elementy po pobraniu danych
+                    document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('searchButton').style.display = 'inline-block';
+                    document.getElementById('addAccountButton').style.display = 'inline-block';
+                    document.getElementById('searchInput').style.display = 'inline-block';
+                    document.querySelector('h3').style.display = 'block';
+
+                    return;
+                }
+            }
+
+            var userDataContainer = document.getElementById('userData');
+            userDataContainer.textContent = 'Brak danych dla tego użytkownika.';
+        } catch (error) {
+            var userDataContainer = document.getElementById('userData');
+            userDataContainer.textContent = `Błąd: ${error.message}`;
+        }
+    }
+
+    async function fetchStoreData(storeId) {
+        try {
+            var apiKey = 'AIzaSyD0DTyPWSFIAalWvehONn1kFbkNqKyyDdU';
+            var sheetId = '1SaaFoqfNJfjt9F78DOLlQUKbeKLzwstU3AdgNng2-QY';
+            var range = 'Sklepy!A:C';
+
+            var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sklepy?key=${apiKey}`;
+            var response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Błąd: ${response.status} - ${response.statusText}`);
+            }
+
+            var data = await response.json();
+
+            if (!data || !data.values) {
+                throw new Error('Błąd: Brak danych lub błąd w odpowiedzi API.');
+            }
+
+            var rows = data.values;
+
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i][0] && rows[i][0] === storeId) {
+
+                    // Przypisanie wyników funkcji do zmiennych globalnych
+                    SklepyID = rows[i][1] || 'Brak danych';
+                   
+
+                    console.log(`Dane dla sklepu o ID ${storeId}: SklepyID - ${SklepyID}, LinkID - ${LinkID}`);
+
+                    return;
+                }
+            }
+
+            console.log('Brak danych dla tego sklepu.');
+        } catch (error) {
+            console.error(`Błąd: ${error.message}`);
+        }
+    }
+
+    function fetchUserList() {
+        var apiKey = 'AIzaSyD0DTyPWSFIAalWvehONn1kFbkNqKyyDdU';
+        var userListUrl = `https://sheets.googleapis.com/v4/spreadsheets/${userFileId}/values/Użytkownicy?key=${apiKey}`;
+
+        return fetch(userListUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Błąd: ${response.status} - ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                return data.values.map(row => row[0]);
+            });
+    }
+
+    initializeUserList();
+
 </script>
 
 </body>
